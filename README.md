@@ -1,2 +1,7 @@
-# data_art
-Repository to store the code used to generate data visualizations/art
+# Data Art
+Various data visualizations that can be 
+
+## Requirements
+* Python 3
+* Holoviews
+* BioPython
