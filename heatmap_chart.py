@@ -29,14 +29,10 @@ dict_aux = {"AA":0,"AC":1,"AG":2,"AT":3,   # indexes of relationships used to ad
 
 # storage of links and weights used to create the diagram
 
-data = [{'source': 1, 'target': 1, 'value': 0},{'source': 1, 'target': 2, 'value': 0},
-        {'source': 1, 'target': 3, 'value': 0},{'source': 1, 'target': 4, 'value': 0},
-        {'source': 2, 'target': 1, 'value': 0},{'source': 2, 'target': 2, 'value': 0},
-        {'source': 2, 'target': 3, 'value': 0},{'source': 2, 'target': 4, 'value': 0},
-        {'source': 3, 'target': 1, 'value': 0},{'source': 3, 'target': 2, 'value': 0},
-        {'source': 3, 'target': 3, 'value': 0},{'source': 3, 'target': 4, 'value': 0},
-        {'source': 4, 'target': 1, 'value': 0},{'source': 4, 'target': 2, 'value': 0},
-        {'source': 4, 'target': 3, 'value': 0},{'source': 4, 'target': 4, 'value': 0}]
+data = [["A", "A", 0],["A", "C", 0],["A", "G", 0],["A", "T", 0],
+        ["C", "A", 0],["C", "C", 0],["C", "G", 0],["C", "T", 0],
+        ["G", "A", 0],["G", "C", 0],["G", "G", 0],["G", "T", 0],
+        ["T", "A", 0],["T", "C", 0],["T", "G", 0],["T", "T", 0]]
 
 
 
@@ -74,33 +70,23 @@ for letter in sequence:
 # store the number of relationships occurred (i.e, AA, AC, AT, etc)    
 for i in range(len(lista)-1):
     dictionary[str(lista[i]+lista[i+1])] = dictionary[str(lista[i]+lista[i+1])] +1
-
-# add values to the datased used for the actual diagram     
-for k in dict_aux:
-    data[dict_aux[k]]["value"] = dictionary[k]
     
+# create the dataset
+for i in range(len(data)):
+    data[i][2] = dictionary[data[i][0]+data[i][1]]
 
 # -------------------------------------------- # 
 # ------------ create diagram ---------------- #
 # -------------------------------------------- # 
 
-# transform data to a Pandas dataset
-links = pd.DataFrame(data)
-nodos = [{"name":"Adenine", "index":1},{"name":"Cytosine", "index":2},
-         {"name":"Guanine", "index":3},{"name":"Thymine", "index":4}]
-nodes = hv.Dataset(pd.DataFrame(nodos), 'index')
+# plot the chart using holoviews
+hm = hv.HeatMap(data).sort()
 
-# generate the diagram with given options
-# these options create a diagram with labels, nodes, and edges
-# comment these two lines if you want to make a all-black diagram
-#chord = hv.Chord((links, nodes))
-#chord.opts(
-#    opts.Chord(cmap='Category20', edge_cmap='Category20', edge_color=dim('source').str(), 
-#               labels="name", node_color=dim('index').str()))
+# this line creates a diagram with labels, comment it if you don't want labels
+# this is useful if you want to understand what the colors mean
+hm.opts(colorbar = True, xlabel = "Source", ylabel = "Target")
 
-# use these options to create a diagram in black with no labels, no nodes, and no edges
-# these options create a more artsy diagram
-# comment these lines if you want to keep the oob options 
-chord = hv.Chord(links)
-chord.opts(
-    opts.Chord(edge_color="black", node_color="black", node_size = 1, edge_visible = False))
+
+# this line creates a diagram without labels or anotations
+# this is useful if you want to create a more artsy visualizations
+#hm.opts(xaxis = None, yaxis = None)

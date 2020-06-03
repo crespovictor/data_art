@@ -5,3 +5,4 @@ Various data visualizations that can be
 * Python 3
 * Holoviews
 * BioPython
+* PyWaffle
